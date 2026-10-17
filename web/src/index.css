@@ -1,26 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "@xyflow/react/dist/style.css";
 
-/* Design System Tokens strictly aligned with DESIGN.md */
+/* Swiss / Editorial Security Design Tokens strictly from design.md */
 @theme {
-  --color-rausch: #ff385c;
-  --color-rausch-active: #e00b41;
-  --color-rausch-disabled: #ffd1da;
-  --color-rausch-error: #c13515;
-  --color-rausch-error-hover: #b32505;
-  --color-ink: #222222;
-  --color-body: #3f3f3f;
-  --color-muted: #6a6a6a;
-  --color-muted-soft: #929292;
-  --color-hairline: #dddddd;
-  --color-hairline-soft: #ebebeb;
-  --color-border-strong: #c1c1c1;
-  --color-canvas: #ffffff;
-  --color-surface-soft: #f7f7f7;
-  --color-surface-strong: #f2f2f2;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --color-kv-ink: #1A1A1A;
+  --color-kv-black: #05070A;
+  --color-kv-night: #071024;
+  --color-kv-paper: #FFFFFF;
+  --color-kv-surface: #F2F2F2;
+  --color-kv-red: #D82C2C;
+  --color-kv-blue: #0033A0;
+  --color-kv-muted: #697271;
+  --color-kv-dark-copy: #C8CECD;
+  --color-kv-dark-rule: #3B3B3B;
+  --color-kv-rule: #DFE3E3;
 }
 
-/* Base reset and typography */
+:root {
+  --kv-ink: #1A1A1A;
+  --kv-black: #05070A;
+  --kv-night: #071024;
+  --kv-paper: #FFFFFF;
+  --kv-surface: #F2F2F2;
+  --kv-red: #D82C2C;
+  --kv-blue: #0033A0;
+  --kv-muted: #697271;
+  --kv-dark-copy: #C8CECD;
+  --kv-dark-rule: #3B3B3B;
+  --kv-rule: #DFE3E3;
+}
+
+/* Base reset: Institutional cinematic black canvas */
 html,
 body,
 #root {
@@ -29,73 +43,62 @@ body,
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #0c0d0e;
-  color: #f4f4f5;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Inter, sans-serif;
+  background-color: #05070A;
+  color: #FFFFFF;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* React Flow background styling */
+/* React Flow background: Engineered environmental lighting */
 .react-flow__background {
-  background-color: #0c0d0e !important;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 51, 160, 0.18), transparent 65%), #05070A !important;
 }
 
 .react-flow__attribution {
   display: none !important;
 }
 
-/* React Flow controls refinement */
+/* React Flow controls: Swiss sharp rectangular precision */
 .react-flow__controls {
-  border-radius: 12px !important;
+  border-radius: 0px !important;
   overflow: hidden !important;
-  border: 1px solid #27272a !important;
-  background: #141416 !important;
-  box-shadow: rgba(0, 0, 0, 0.04) 0 2px 6px 0, rgba(0, 0, 0, 0.1) 0 4px 8px 0 !important;
+  border: 1px solid #3B3B3B !important;
+  background: #1A1A1A !important;
+  box-shadow: none !important;
 }
 
 .react-flow__controls-button {
-  background: #141416 !important;
-  border-bottom: 1px solid #27272a !important;
-  fill: #a1a1aa !important;
-  color: #a1a1aa !important;
-  transition: all 0.15s ease !important;
+  background: #1A1A1A !important;
+  border-bottom: 1px solid #3B3B3B !important;
+  border-radius: 0px !important;
+  fill: #C8CECD !important;
+  color: #C8CECD !important;
+  transition: all 0.1s ease !important;
 }
 
 .react-flow__controls-button:hover {
-  background: #1f1f23 !important;
-  fill: #ffffff !important;
-  color: #ffffff !important;
+  background: #0033A0 !important;
+  fill: #FFFFFF !important;
+  color: #FFFFFF !important;
 }
 
-/* Single signature elevation tier from DESIGN.md */
-.shadow-airbnb {
-  box-shadow: rgba(0, 0, 0, 0.04) 0 2px 6px 0, rgba(0, 0, 0, 0.1) 0 4px 8px 0;
-}
-
-.shadow-airbnb-float {
-  box-shadow: rgba(0, 0, 0, 0.08) 0 4px 16px 0, rgba(0, 0, 0, 0.16) 0 8px 24px 0;
-}
-
-.shadow-airbnb-orb {
-  box-shadow: 0 4px 14px 0 rgba(255, 56, 92, 0.35);
-}
-
-/* Smooth scrollbar styling */
+/* Sharp technical scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0c0d0e;
+  background: #05070A;
+  border-left: 1px solid #1A1A1A;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
-  border-radius: 9999px;
+  background: #3B3B3B;
+  border-radius: 0px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+  background: #697271;
 }

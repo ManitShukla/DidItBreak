@@ -20,34 +20,31 @@ export const CodeDiffNode: React.FC<NodeProps<CodeDiffNodeType>> = memo((props) 
   const risk = data.riskLevel || (data.deletions > 0 && data.additions > 0 ? 'CRITICAL' : 'SAFE');
   const isSelected = props.selected;
 
-  // Airbnb design token styles for cards and badges
+  // Swiss/editorial severity rules
   const riskStyles = {
     CRITICAL: {
-      border: 'border-[#ff385c]/80',
-      glow: 'shadow-[0_4px_20px_-4px_rgba(255,56,92,0.35)]',
-      badgeBg: 'bg-[#ff385c]/10 text-rose-200 border-[#ff385c]/40',
-      badgeText: 'text-rose-100',
+      border: 'border-[#D82C2C]',
+      accentRule: 'bg-[#D82C2C]',
+      badgeBg: 'bg-[#D82C2C]/10 text-[#D82C2C] border-[#D82C2C]',
+      badgeText: 'text-[#FFFFFF]',
       icon: Flame,
-      headerBg: 'bg-[#ff385c]/10',
-      accentColor: '#ff385c',
+      statusLabel: 'CRITICAL // CONTRACT BREAK',
     },
     WARNING: {
-      border: 'border-amber-500/80',
-      glow: 'shadow-[0_4px_20px_-4px_rgba(245,158,11,0.3)]',
-      badgeBg: 'bg-amber-500/10 text-amber-200 border-amber-500/40',
-      badgeText: 'text-amber-100',
+      border: 'border-amber-500',
+      accentRule: 'bg-amber-500',
+      badgeBg: 'bg-amber-500/10 text-amber-400 border-amber-500',
+      badgeText: 'text-[#FFFFFF]',
       icon: AlertTriangle,
-      headerBg: 'bg-amber-500/10',
-      accentColor: '#f59e0b',
+      statusLabel: 'WARNING // SIGNATURE SHIFT',
     },
     SAFE: {
-      border: 'border-emerald-500/80',
-      glow: 'shadow-[0_4px_20px_-4px_rgba(16,185,129,0.25)]',
-      badgeBg: 'bg-emerald-500/10 text-emerald-200 border-emerald-500/40',
-      badgeText: 'text-emerald-100',
+      border: 'border-[#0033A0]',
+      accentRule: 'bg-[#0033A0]',
+      badgeBg: 'bg-[#0033A0]/20 text-emerald-400 border-[#0033A0]',
+      badgeText: 'text-[#FFFFFF]',
       icon: CheckCircle2,
-      headerBg: 'bg-emerald-500/10',
-      accentColor: '#10b981',
+      statusLabel: 'SAFE // VERIFIED INTACT',
     },
   }[risk];
 
@@ -63,67 +60,72 @@ export const CodeDiffNode: React.FC<NodeProps<CodeDiffNodeType>> = memo((props) 
   return (
     <div
       className={clsx(
-        'w-[340px] rounded-[14px] border bg-[#141417]/95 text-zinc-100 shadow-airbnb transition-all duration-300 backdrop-blur-md relative cursor-pointer overflow-hidden',
+        'w-[350px] bg-[#1A1A1A] border rounded-none text-[#FFFFFF] transition-all duration-150 relative cursor-pointer',
         riskStyles.border,
-        riskStyles.glow,
         isSelected
-          ? 'ring-2 ring-[#ff385c] scale-[1.02] z-30 shadow-airbnb-float'
-          : 'hover:border-zinc-500 hover:shadow-airbnb-float',
-        data.isDimmed && 'opacity-25 filter grayscale-[60%] pointer-events-none'
+          ? 'ring-2 ring-[#FFFFFF] z-30 shadow-none'
+          : 'hover:border-[#C8CECD]',
+        data.isDimmed && 'opacity-20 filter grayscale pointer-events-none'
       )}
     >
-      {/* Target handle on Position.Top */}
+      {/* 2px Solid Accent Rule at Top of Node */}
+      <div className={clsx('h-[2px] w-full', riskStyles.accentRule)} />
+
+      {/* Target handle on Position.Top (Engineered sharp square) */}
       <Handle
         type="target"
         position={Position.Top}
-        className="!w-3.5 !h-3.5 !bg-zinc-300 !border-2 !border-[#141417] transition-colors hover:!bg-[#ff385c]"
+        className="!w-3 !h-3 !rounded-none !bg-[#C8CECD] !border-2 !border-[#05070A] transition-colors hover:!bg-[#D82C2C]"
       />
       <Handle
         type="target"
         position={Position.Left}
         id="target-left"
-        className="!w-3 !h-3 !bg-zinc-400 !border-2 !border-[#141417] opacity-0"
+        className="!w-2 !h-2 !rounded-none !bg-[#3B3B3B] !border-0 opacity-0"
       />
 
-      {/* 1. Header: File name in modest weight 600 with addition/deletion pill */}
-      <div
-        className={clsx(
-          'flex items-center justify-between border-b border-zinc-800/80 px-4 py-2.5',
-          riskStyles.headerBg
-        )}
-      >
-        <div className="flex items-center space-x-2 min-w-0">
-          <FileCode className="w-4 h-4 text-zinc-300 shrink-0" />
-          <span className="text-sm font-semibold tracking-tight text-white truncate" title={data.fileName}>
-            {data.fileName}
-          </span>
-        </div>
+      {/* 1. Header: Technical notation row */}
+      <div className="px-3.5 pt-3 pb-1 flex items-center justify-between text-[10px] font-mono border-b border-[#3B3B3B] text-[#697271]">
+        <span className="truncate max-w-[200px] uppercase tracking-wider" title={data.filePath}>
+          {data.filePath}
+        </span>
 
-        {/* Addition / Deletion pill badge (rounded.full) */}
-        <div className="flex items-center space-x-1 font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-zinc-950/90 border border-zinc-800 font-semibold shrink-0 shadow-sm">
+        {/* Diff metrics */}
+        <div className="flex items-center space-x-1 shrink-0 font-bold">
           <span className="text-emerald-400">+{data.additions}</span>
-          <span className="text-zinc-600">/</span>
-          <span className="text-[#ff385c]">-{data.deletions}</span>
+          <span className="text-[#3B3B3B]">/</span>
+          <span className="text-[#D82C2C]">-{data.deletions}</span>
         </div>
       </div>
 
-      {/* 2. File Path Subheader */}
-      <div className="px-4 py-1.5 border-b border-zinc-800/40 text-[11px] font-mono text-zinc-400 truncate bg-zinc-950/50">
-        {data.filePath}
+      {/* 2. File Name Title */}
+      <div className="px-3.5 py-2.5 flex items-center justify-between">
+        <div className="flex items-center space-x-2 min-w-0">
+          <FileCode className="w-4 h-4 text-[#C8CECD] shrink-0" />
+          <h4 className="font-sans font-semibold text-sm tracking-[-0.03em] text-[#FFFFFF] truncate" title={data.fileName}>
+            {data.fileName}
+          </h4>
+        </div>
+
+        {data.isRootCause && (
+          <span className="px-1.5 py-0.5 bg-[#D82C2C] text-[#FFFFFF] text-[9px] font-mono font-bold uppercase tracking-[0.1em] shrink-0">
+            ROOT CAUSE
+          </span>
+        )}
       </div>
 
-      {/* 3. Card Interior (8px rounded mini diff & risk badge) */}
-      <div className="p-3.5 space-y-2.5">
-        {/* Mini diff box with interactive click-to-pin */}
-        <div className="rounded-[8px] bg-zinc-950 p-2.5 font-mono text-[11px] leading-relaxed border border-zinc-800/80 overflow-hidden shadow-inner">
+      {/* 3. Card Interior */}
+      <div className="px-3.5 pb-3 space-y-2.5">
+        {/* Mini diff box with sharp 1px border & mono highlights */}
+        <div className="bg-[#05070A] border border-[#3B3B3B] p-2 font-mono text-[11px] leading-relaxed select-text">
           {data.oldSnippet && (
             <div
               onClick={(e) => handleSnippetClick(e, data.oldSnippet)}
-              className="text-rose-300 bg-rose-950/30 hover:bg-rose-900/50 px-2 py-1 rounded-[6px] mb-1.5 flex items-start cursor-pointer transition-colors"
+              className="text-[#D82C2C] bg-[#D82C2C]/10 border-l-2 border-[#D82C2C] px-2 py-0.5 mb-1 flex items-start cursor-pointer hover:bg-[#D82C2C]/20 transition-colors"
               title="Click to ask AI about this deletion"
             >
-              <span className="select-none text-[#ff385c] font-bold mr-2 shrink-0">-</span>
-              <span className="line-through opacity-85 truncate">
+              <span className="select-none font-bold mr-2 shrink-0">-</span>
+              <span className="line-through opacity-90 truncate">
                 {data.oldSnippet.split('\n')[0]}
               </span>
             </div>
@@ -131,56 +133,49 @@ export const CodeDiffNode: React.FC<NodeProps<CodeDiffNodeType>> = memo((props) 
           {data.newSnippet && (
             <div
               onClick={(e) => handleSnippetClick(e, data.newSnippet)}
-              className="text-emerald-300 bg-emerald-950/30 hover:bg-emerald-900/50 px-2 py-1 rounded-[6px] flex items-start cursor-pointer transition-colors"
+              className="text-emerald-400 bg-emerald-950/30 border-l-2 border-emerald-500 px-2 py-0.5 flex items-start cursor-pointer hover:bg-emerald-950/50 transition-colors"
               title="Click to ask AI about this addition"
             >
-              <span className="select-none text-emerald-400 font-bold mr-2 shrink-0">+</span>
+              <span className="select-none font-bold mr-2 shrink-0">+</span>
               <span className="truncate">{data.newSnippet.split('\n')[0]}</span>
             </div>
           )}
           {!data.oldSnippet && !data.newSnippet && (
-            <span className="text-zinc-500 italic block py-0.5">No direct code lines captured</span>
+            <span className="text-[#697271] italic block text-[10px]">NO CODE HUNKS CAPTURED</span>
           )}
         </div>
 
-        {/* Risk verdict badge (Guest-favorite pill style) */}
+        {/* Risk verdict banner */}
         <div
           className={clsx(
-            'flex items-start space-x-2.5 p-3 rounded-[10px] border text-xs leading-snug shadow-sm',
+            'p-2.5 border text-xs font-mono leading-tight',
             riskStyles.badgeBg
           )}
         >
-          <RiskIcon className="w-4 h-4 shrink-0 mt-0.5" />
-          <div className="min-w-0">
-            <div className="font-bold uppercase tracking-wider text-[10px] flex items-center gap-1.5">
-              <span>{risk}</span>
-              {data.isRootCause && (
-                <span className="px-2 py-0.2 text-[9px] bg-[#ff385c] text-white rounded-full font-extrabold uppercase tracking-tight shadow-sm">
-                  Root Cause
-                </span>
-              )}
-            </div>
-            <p className={clsx('mt-1 font-medium text-xs leading-tight', riskStyles.badgeText)}>
-              {data.breakReason || 'Architectural shift verified non-breaking.'}
-            </p>
+          <div className="flex items-center space-x-1.5 font-bold uppercase tracking-[0.08em] text-[10px]">
+            <RiskIcon className="w-3.5 h-3.5 shrink-0" />
+            <span>{riskStyles.statusLabel}</span>
           </div>
+          <p className="mt-1 font-sans font-medium text-xs text-[#FFFFFF] leading-snug">
+            {data.breakReason || 'Architectural shift verified intact.'}
+          </p>
         </div>
       </div>
 
-      {/* 4. Footer: Dependency Tags & Ask AI Pill Button */}
-      <div className="px-4 py-2 border-t border-zinc-800/40 text-[11px] text-zinc-400 flex items-center justify-between bg-zinc-950/40">
+      {/* 4. Footer: Dependency Tags & Sharp Ask AI Action */}
+      <div className="px-3.5 py-2 border-t border-[#3B3B3B] bg-[#05070A] text-[10px] font-mono text-[#697271] flex items-center justify-between">
         {data.imports.length > 0 ? (
-          <span className="font-mono text-zinc-400 truncate max-w-[170px]" title={data.imports.join(', ')}>
-            Imports: {data.imports.join(', ')}
+          <span className="truncate max-w-[190px]" title={data.imports.join(', ')}>
+            IMP // {data.imports.join(', ')}
           </span>
         ) : (
-          <span className="text-zinc-500">Self-contained</span>
+          <span>SELF-CONTAINED</span>
         )}
 
         <div className="flex items-center space-x-2">
           {isSelected && (
-            <span className="text-[10px] uppercase tracking-wider font-semibold text-[#ff385c]">
-              Selected
+            <span className="text-[#D82C2C] font-bold uppercase tracking-wider text-[9px]">
+              [ACTIVE]
             </span>
           )}
 
@@ -192,11 +187,11 @@ export const CodeDiffNode: React.FC<NodeProps<CodeDiffNodeType>> = memo((props) 
                 data.newSnippet || data.oldSnippet || `Modifications in ${data.fileName}`
               )
             }
-            className="text-[11px] font-medium text-zinc-200 hover:text-white flex items-center space-x-1 px-2.5 py-1 rounded-full bg-zinc-800/90 hover:bg-[#ff385c] hover:shadow-airbnb-orb transition-all duration-200"
+            className="px-2 py-0.5 bg-[#1A1A1A] hover:bg-[#D82C2C] border border-[#3B3B3B] hover:border-[#D82C2C] text-[#FFFFFF] text-[10px] font-mono uppercase tracking-wider flex items-center space-x-1 transition-colors"
             title="Ask AI about this file"
           >
-            <Sparkles className="w-3 h-3 text-[#ff385c] group-hover:text-white" />
-            <span>Ask AI</span>
+            <Sparkles className="w-3 h-3 text-[#D82C2C] group-hover:text-[#FFFFFF]" />
+            <span>ASK AI</span>
           </button>
         </div>
       </div>
@@ -205,13 +200,13 @@ export const CodeDiffNode: React.FC<NodeProps<CodeDiffNodeType>> = memo((props) 
       <Handle
         type="source"
         position={Position.Bottom}
-        className="!w-3.5 !h-3.5 !bg-zinc-300 !border-2 !border-[#141417] transition-colors hover:!bg-[#ff385c]"
+        className="!w-3 !h-3 !rounded-none !bg-[#C8CECD] !border-2 !border-[#05070A] transition-colors hover:!bg-[#D82C2C]"
       />
       <Handle
         type="source"
         position={Position.Right}
         id="source-right"
-        className="!w-3 !h-3 !bg-zinc-400 !border-2 !border-[#141417] opacity-0"
+        className="!w-2 !h-2 !rounded-none !bg-[#3B3B3B] !border-0 opacity-0"
       />
     </div>
   );

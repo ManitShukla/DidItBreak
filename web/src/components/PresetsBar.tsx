@@ -1,5 +1,5 @@
 import React from 'react';
-import { Radio, Database, Lock, CheckCircle, Sparkles, Compass } from 'lucide-react';
+import { Radio, Database, Lock, CheckCircle, Terminal } from 'lucide-react';
 import clsx from 'clsx';
 
 export interface PresetsBarProps {
@@ -17,50 +17,57 @@ export const PresetsBar: React.FC<PresetsBarProps> = ({
 }) => {
   return (
     <nav
-      aria-label="Demo Scenarios and Live Stream Switcher"
-      className="w-full bg-[#121316]/90 border-b border-zinc-800/80 px-4 sm:px-6 py-2 flex items-center justify-between text-xs overflow-x-auto z-20 backdrop-blur-md shadow-sm"
+      aria-label="Scenario Suite and Live Telemetry Bar"
+      className="w-full bg-[#05070A] border-b border-[#3B3B3B] px-4 sm:px-6 py-2 flex items-center justify-between text-xs overflow-x-auto z-20 font-mono"
     >
-      <div className="flex items-center space-x-2.5 min-w-0">
-        <div className="flex items-center space-x-1.5 text-zinc-400 font-semibold uppercase tracking-wider text-[11px] mr-1 shrink-0">
-          <Compass className="w-3.5 h-3.5 text-[#ff385c]" />
-          <span>Demo Suite:</span>
+      <div className="flex items-center space-x-2 shrink-0">
+        <div className="flex items-center space-x-1.5 text-[#697271] font-bold uppercase tracking-[0.12em] text-[10px] mr-2 shrink-0">
+          <Terminal className="w-3.5 h-3.5 text-[#0033A0]" />
+          <span>SCENARIOS //</span>
         </div>
 
-        {/* Live Watcher Stream Toggle Pill (Airbnb Button Pill) */}
+        {/* Live Watcher Stream Toggle */}
         <button
           type="button"
           onClick={onSelectLive}
           className={clsx(
-            'flex items-center space-x-2 px-3.5 py-1.5 rounded-full border text-xs font-medium transition-all duration-200 shrink-0 shadow-airbnb',
+            'flex items-center space-x-2 px-3 py-1.5 rounded-none border text-xs font-mono font-bold tracking-[0.08em] uppercase transition-colors shrink-0',
             selectedScenarioKey === null
-              ? 'bg-[#ff385c] border-[#ff385c] text-white shadow-airbnb-orb font-semibold'
-              : 'bg-zinc-900/90 border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 hover:bg-zinc-800/80'
+              ? 'bg-[#FFFFFF] text-[#1A1A1A] border-[#FFFFFF]'
+              : 'bg-transparent border-[#3B3B3B] text-[#C8CECD] hover:text-[#FFFFFF] hover:border-[#697271]'
           )}
         >
-          <Radio className={clsx('w-3.5 h-3.5', selectedScenarioKey === null && 'animate-pulse')} />
-          <span>Live Watcher Stream</span>
+          <Radio className={clsx('w-3.5 h-3.5', selectedScenarioKey === null && 'animate-pulse text-[#D82C2C]')} />
+          <span>[LIVE WATCHER]</span>
           {isWatcherConnected && (
-            <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block ml-0.5 animate-ping" />
+            <span className="w-1.5 h-1.5 bg-emerald-400 inline-block ml-1 animate-ping" />
           )}
         </button>
 
-        <div className="h-4 w-px bg-zinc-800 mx-1 shrink-0" />
+        <div className="h-4 w-px bg-[#3B3B3B] mx-1 shrink-0" />
 
         {/* Scenario A: Broken Prisma Migration (Hero Scenario) */}
         <button
           type="button"
           onClick={() => onSelectScenario('scenario_a')}
           className={clsx(
-            'flex items-center space-x-2 px-3.5 py-1.5 rounded-full border text-xs font-medium transition-all duration-200 shrink-0 shadow-airbnb',
+            'flex items-center space-x-2 px-3 py-1.5 rounded-none border text-xs font-mono font-bold tracking-[0.08em] uppercase transition-colors shrink-0',
             selectedScenarioKey === 'scenario_a'
-              ? 'bg-[#ff385c]/15 border-[#ff385c] text-[#ff385c] ring-1 ring-[#ff385c]/30 font-semibold'
-              : 'bg-zinc-900/90 border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 hover:bg-zinc-800/80'
+              ? 'bg-[#D82C2C] text-[#FFFFFF] border-[#D82C2C]'
+              : 'bg-transparent border-[#3B3B3B] text-[#C8CECD] hover:text-[#FFFFFF] hover:border-[#697271]'
           )}
         >
-          <Database className="w-3.5 h-3.5 text-[#ff385c]" />
-          <span>Scenario A: Broken Prisma</span>
-          <span className="px-2 py-0.2 rounded-full text-[9px] bg-[#ff385c]/20 text-[#ff385c] border border-[#ff385c]/40 uppercase font-bold tracking-wider">
-            Hero
+          <Database className="w-3.5 h-3.5" />
+          <span>01 // BROKEN PRISMA (HERO)</span>
+          <span
+            className={clsx(
+              'px-1 py-0.2 text-[9px] font-mono font-bold uppercase tracking-wider',
+              selectedScenarioKey === 'scenario_a'
+                ? 'bg-[#1A1A1A] text-[#FFFFFF]'
+                : 'bg-[#D82C2C]/20 text-[#D82C2C] border border-[#D82C2C]/40'
+            )}
+          >
+            CRITICAL
           </span>
         </button>
 
@@ -69,16 +76,23 @@ export const PresetsBar: React.FC<PresetsBarProps> = ({
           type="button"
           onClick={() => onSelectScenario('scenario_b')}
           className={clsx(
-            'flex items-center space-x-2 px-3.5 py-1.5 rounded-full border text-xs font-medium transition-all duration-200 shrink-0 shadow-airbnb',
+            'flex items-center space-x-2 px-3 py-1.5 rounded-none border text-xs font-mono font-bold tracking-[0.08em] uppercase transition-colors shrink-0',
             selectedScenarioKey === 'scenario_b'
-              ? 'bg-amber-500/15 border-amber-500 text-amber-300 ring-1 ring-amber-500/30 font-semibold'
-              : 'bg-zinc-900/90 border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 hover:bg-zinc-800/80'
+              ? 'bg-[#0033A0] text-[#FFFFFF] border-[#0033A0]'
+              : 'bg-transparent border-[#3B3B3B] text-[#C8CECD] hover:text-[#FFFFFF] hover:border-[#697271]'
           )}
         >
-          <Lock className="w-3.5 h-3.5 text-amber-400" />
-          <span>Scenario B: Auth Refactor</span>
-          <span className="px-2 py-0.2 rounded-full text-[9px] bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase font-bold tracking-wider">
-            Warning
+          <Lock className="w-3.5 h-3.5" />
+          <span>02 // AUTH REFACTOR</span>
+          <span
+            className={clsx(
+              'px-1 py-0.2 text-[9px] font-mono font-bold uppercase tracking-wider',
+              selectedScenarioKey === 'scenario_b'
+                ? 'bg-[#1A1A1A] text-[#FFFFFF]'
+                : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
+            )}
+          >
+            WARN
           </span>
         </button>
 
@@ -87,23 +101,29 @@ export const PresetsBar: React.FC<PresetsBarProps> = ({
           type="button"
           onClick={() => onSelectScenario('scenario_c')}
           className={clsx(
-            'flex items-center space-x-2 px-3.5 py-1.5 rounded-full border text-xs font-medium transition-all duration-200 shrink-0 shadow-airbnb',
+            'flex items-center space-x-2 px-3 py-1.5 rounded-none border text-xs font-mono font-bold tracking-[0.08em] uppercase transition-colors shrink-0',
             selectedScenarioKey === 'scenario_c'
-              ? 'bg-emerald-500/15 border-emerald-500 text-emerald-300 ring-1 ring-emerald-500/30 font-semibold'
-              : 'bg-zinc-900/90 border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 hover:bg-zinc-800/80'
+              ? 'bg-[#0033A0] text-[#FFFFFF] border-[#0033A0]'
+              : 'bg-transparent border-[#3B3B3B] text-[#C8CECD] hover:text-[#FFFFFF] hover:border-[#697271]'
           )}
         >
-          <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Scenario C: Safe Utility</span>
-          <span className="px-2 py-0.2 rounded-full text-[9px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 uppercase font-bold tracking-wider">
-            Safe
+          <CheckCircle className="w-3.5 h-3.5" />
+          <span>03 // SAFE UTILITY</span>
+          <span
+            className={clsx(
+              'px-1 py-0.2 text-[9px] font-mono font-bold uppercase tracking-wider',
+              selectedScenarioKey === 'scenario_c'
+                ? 'bg-[#1A1A1A] text-[#FFFFFF]'
+                : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+            )}
+          >
+            SAFE
           </span>
         </button>
       </div>
 
-      <div className="hidden lg:flex items-center space-x-2 text-[11px] text-zinc-400 shrink-0 pl-4 font-sans">
-        <Sparkles className="w-3 h-3 text-[#ff385c]" />
-        <span>Click any node to isolate topological blast radius</span>
+      <div className="hidden lg:flex items-center space-x-2 text-[11px] text-[#697271] font-mono tracking-wider shrink-0 pl-4">
+        <span>INTERACTION // SELECT NODE TO ISOLATE BLAST RADIUS</span>
       </div>
     </nav>
   );

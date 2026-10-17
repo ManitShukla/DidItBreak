@@ -10,7 +10,7 @@ import {
   Edge,
   MiniMap,
 } from '@xyflow/react';
-import { FileCode2, RefreshCw, AlertCircle, MessageSquare } from 'lucide-react';
+import { FileCode2, RefreshCw, AlertCircle, Terminal } from 'lucide-react';
 
 import CodeDiffNode, { CodeDiffNodeData, CodeDiffNodeType } from './components/CodeDiffNode';
 import GlobalVerdict from './components/GlobalVerdict';
@@ -293,9 +293,12 @@ export const App: React.FC = () => {
     }));
   }, [nodes, edges, selectedNodeId]);
 
-  // Highlight connected edges with glowing Rausch animated stroke
+  // Highlight connected edges with institutional blue or red animated stroke
   const displayEdges = useMemo(() => {
     if (!selectedNodeId) return edges;
+
+    const isTargetCritical = selectedNode?.data.riskLevel === 'CRITICAL';
+    const activeColor = isTargetCritical ? '#D82C2C' : '#0033A0';
 
     return edges.map((e) => {
       const isConnectedEdge = e.source === selectedNodeId || e.target === selectedNodeId;
@@ -304,21 +307,21 @@ export const App: React.FC = () => {
         animated: isConnectedEdge,
         style: isConnectedEdge
           ? {
-              stroke: '#ff385c',
+              stroke: activeColor,
               strokeWidth: 2.5,
-              filter: 'drop-shadow(0 0 8px rgba(255,56,92,0.6))',
+              filter: `drop-shadow(0 0 6px ${isTargetCritical ? 'rgba(216, 44, 44, 0.8)' : 'rgba(0, 51, 160, 0.8)'})`,
             }
           : {
-              stroke: '#27272a',
+              stroke: '#3B3B3B',
               strokeWidth: 1,
-              opacity: 0.25,
+              opacity: 0.2,
             },
       };
     });
-  }, [edges, selectedNodeId]);
+  }, [edges, selectedNodeId, selectedNode]);
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-[#0c0d0e] text-zinc-100 select-none overflow-hidden font-sans">
+    <div className="flex flex-col h-screen w-screen bg-[#05070A] text-[#FFFFFF] select-none overflow-hidden font-sans">
       {/* 1. Global Verdict Sticky Banner with Active Repository Switcher */}
       <GlobalVerdict
         verdict={metrics.verdict}
@@ -346,29 +349,31 @@ export const App: React.FC = () => {
       />
 
       {/* 3. Main Graph Workspace */}
-      <main className="relative flex-1 w-full h-full overflow-hidden bg-[#0c0d0e]">
+      <main className="relative flex-1 w-full h-full overflow-hidden bg-[#05070A]">
         {/* Loading Overlay when rebinding repository */}
         {isChangingDirectory && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0c0d0e]/85 backdrop-blur-md z-30 space-y-3">
-            <div className="w-12 h-12 rounded-full bg-[#ff385c]/15 text-[#ff385c] flex items-center justify-center shadow-airbnb-orb">
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#05070A]/90 z-30 space-y-3 font-mono">
+            <div className="p-3 bg-[#1A1A1A] border border-[#3B3B3B] text-[#D82C2C]">
               <RefreshCw className="w-6 h-6 animate-spin" />
             </div>
-            <h3 className="text-base font-semibold text-white tracking-tight">
-              Switching Repository & Rebinding Watcher...
+            <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-[#FFFFFF]">
+              REBINDING WATCHER // SWITCHING ACTIVE TARGET...
             </h3>
-            <p className="text-xs text-zinc-400 font-mono max-w-md text-center bg-zinc-900/80 px-3 py-1 rounded-full border border-zinc-800">
-              Target: {activePath || 'Validating Git repository on disk...'}
+            <p className="text-[11px] text-[#697271] max-w-md text-center bg-[#1A1A1A] px-3 py-1 border border-[#3B3B3B]">
+              TARGET // {activePath || 'VALIDATING REPOSITORY...'}
             </p>
           </div>
         )}
 
         {nodes.length === 0 && !isChangingDirectory ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 space-y-3 z-10">
-            <div className="w-14 h-14 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 flex items-center justify-center shadow-inner">
-              <FileCode2 className="w-7 h-7" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 space-y-3 z-10 font-mono">
+            <div className="p-4 bg-[#1A1A1A] border border-[#3B3B3B] text-[#697271]">
+              <FileCode2 className="w-8 h-8" />
             </div>
-            <h3 className="text-base font-semibold text-zinc-200">No active git diff changes detected</h3>
-            <p className="text-xs text-zinc-400 max-w-md leading-relaxed">
+            <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-[#FFFFFF]">
+              NO ACTIVE GIT DIFF CHANGES DETECTED
+            </h3>
+            <p className="text-[11px] text-[#697271] max-w-md leading-relaxed">
               {activePath
                 ? `Currently watching repository: ${activePath}. Save any file in this repository to stream diffs, or choose a preset scenario above.`
                 : 'Save changes in your repository to stream diffs via WebSocket, or select one of the demonstration scenarios above.'}
@@ -391,18 +396,18 @@ export const App: React.FC = () => {
           defaultEdgeOptions={{
             type: 'smoothstep',
           }}
-          className="bg-[#0c0d0e]"
+          className="bg-[#05070A]"
         >
-          <Background variant={BackgroundVariant.Dots} gap={24} size={1.25} color="#27272a" />
+          <Background variant={BackgroundVariant.Dots} gap={24} size={1} color="#3B3B3B" />
           <Controls />
           <MiniMap
             nodeColor={(n: Node) => {
               const data = n.data as unknown as CodeDiffNodeData;
-              if (data?.riskLevel === 'CRITICAL') return '#ff385c';
+              if (data?.riskLevel === 'CRITICAL') return '#D82C2C';
               if (data?.riskLevel === 'WARNING') return '#f59e0b';
-              return '#10b981';
+              return '#0033A0';
             }}
-            className="!bg-[#141416]/95 !border-zinc-800 !rounded-[12px] !shadow-airbnb"
+            className="!bg-[#1A1A1A] !border-[#3B3B3B] !rounded-none"
           />
         </ReactFlow>
 
@@ -420,36 +425,35 @@ export const App: React.FC = () => {
 
         {/* 5. Directory Error Toast Notification */}
         {directoryError && (
-          <div className="absolute bottom-6 right-6 z-40 p-4 rounded-[14px] bg-rose-950/95 border border-rose-800 text-rose-200 shadow-airbnb-float flex items-start space-x-3 max-w-md animate-in slide-in-from-bottom-2 backdrop-blur-md">
-            <AlertCircle className="w-5 h-5 text-[#ff385c] shrink-0 mt-0.5" />
+          <div className="absolute bottom-6 right-6 z-40 p-4 bg-[#1A1A1A] border-2 border-[#D82C2C] text-[#FFFFFF] flex items-start space-x-3 max-w-md animate-in slide-in-from-bottom-2 font-mono">
+            <AlertCircle className="w-5 h-5 text-[#D82C2C] shrink-0 mt-0.5" />
             <div className="min-w-0">
-              <h4 className="text-xs font-bold text-rose-300 uppercase tracking-wider">
-                Repository Switch Rejected
+              <h4 className="text-xs font-bold text-[#D82C2C] uppercase tracking-wider">
+                DIRECTORY SWITCH REJECTED
               </h4>
-              <p className="text-xs text-zinc-300 mt-0.5 leading-relaxed">
+              <p className="text-xs text-[#C8CECD] mt-0.5 leading-relaxed">
                 {directoryError}
               </p>
             </div>
           </div>
         )}
 
-        {/* 6. Floating Chatbot Launcher Button (Airbnb button-pill-rausch) */}
+        {/* 6. Floating Chatbot Launcher Button (Sharp rectangular Swiss CTA) */}
         {!isChatOpen && (
           <button
             type="button"
             onClick={() => setIsChatOpen(true)}
-            className="fixed bottom-6 right-6 z-40 flex items-center space-x-2.5 px-5 h-12 rounded-full bg-[#ff385c] hover:bg-[#e00b41] active:bg-[#e00b41] text-white font-medium text-sm shadow-airbnb-orb transition-all duration-200 hover:scale-102 active:scale-98 group cursor-pointer"
+            className="fixed bottom-6 right-6 z-40 flex items-center space-x-2.5 px-4 py-2.5 bg-[#D82C2C] hover:bg-[#D82C2C]/90 text-[#FFFFFF] font-mono font-bold uppercase tracking-[0.1em] text-xs border border-[#D82C2C] transition-colors cursor-pointer group"
             title="Open DidItBreak AI Chat Explainer"
           >
             <div className="relative flex items-center justify-center">
-              <MessageSquare className="w-4 h-4 text-white" />
-              <span className="animate-ping absolute -top-1 -right-1 inline-flex h-2 w-2 rounded-full bg-white opacity-75" />
-              <span className="absolute -top-1 -right-1 inline-flex rounded-full h-2 w-2 bg-white" />
+              <Terminal className="w-4 h-4 text-[#FFFFFF]" />
+              <span className="w-1.5 h-1.5 bg-[#FFFFFF] absolute -top-1 -right-1 animate-ping" />
             </div>
-            <span>Ask DidItBreak AI</span>
+            <span>[ASK AI AGENT]</span>
             {pinnedCode && (
-              <span className="px-2 py-0.5 rounded-full bg-black/30 text-[10px] font-mono border border-white/20 text-white">
-                1 Pinned
+              <span className="px-1.5 py-0.2 bg-[#05070A] text-[9px] font-mono text-[#FFFFFF] border border-[#3B3B3B]">
+                1 PINNED
               </span>
             )}
           </button>

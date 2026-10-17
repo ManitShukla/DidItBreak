@@ -36,11 +36,11 @@ export const DetailDrawer: React.FC<DetailDrawerProps> = ({
 
   const risk = nodeData.riskLevel || 'SAFE';
 
-  // Airbnb badge styles matching DESIGN.md tokens
+  // Swiss severity styles
   const riskBadgeStyles = {
-    CRITICAL: 'bg-[#ff385c]/10 border-[#ff385c]/40 text-rose-200',
-    WARNING: 'bg-amber-500/10 border-amber-500/40 text-amber-200',
-    SAFE: 'bg-emerald-500/10 border-emerald-500/40 text-emerald-200',
+    CRITICAL: 'bg-[#D82C2C]/10 border-[#D82C2C] text-[#D82C2C]',
+    WARNING: 'bg-amber-500/10 border-amber-500 text-amber-400',
+    SAFE: 'bg-[#0033A0]/20 border-[#0033A0] text-emerald-400',
   }[risk];
 
   const handleAskAboutFile = () => {
@@ -54,21 +54,31 @@ export const DetailDrawer: React.FC<DetailDrawerProps> = ({
   return (
     <aside
       aria-label="Diff Blast Radius Inspection Drawer"
-      className="absolute top-0 right-0 bottom-0 w-[460px] max-w-[92vw] bg-[#121316]/95 border-l border-zinc-800 shadow-airbnb-float backdrop-blur-2xl z-30 flex flex-col transition-all duration-300 animate-in slide-in-from-right select-text"
+      className="absolute top-0 right-0 bottom-0 w-[480px] max-w-[95vw] bg-[#1A1A1A] border-l border-[#3B3B3B] z-30 flex flex-col select-text font-mono transition-transform duration-200 animate-in slide-in-from-right"
     >
-      {/* 1. Drawer Header (Airbnb Top-Nav Style) */}
-      <div className="p-4 border-b border-zinc-800 flex items-center justify-between bg-[#141518]/80">
+      {/* 2px Accent Rule at Top */}
+      <div
+        className={clsx(
+          'h-[2px] w-full shrink-0',
+          risk === 'CRITICAL' && 'bg-[#D82C2C]',
+          risk === 'WARNING' && 'bg-amber-500',
+          risk === 'SAFE' && 'bg-[#0033A0]'
+        )}
+      />
+
+      {/* 1. Drawer Header */}
+      <div className="p-4 border-b border-[#3B3B3B] flex items-center justify-between bg-[#05070A]">
         <div className="flex items-center space-x-3 min-w-0">
-          <div className="w-9 h-9 rounded-full bg-[#ff385c]/15 border border-[#ff385c]/30 text-[#ff385c] flex items-center justify-center shrink-0">
-            <FileCode2 className="w-5 h-5" />
+          <div className="p-1.5 bg-[#1A1A1A] border border-[#3B3B3B] text-[#D82C2C]">
+            <FileCode2 className="w-4 h-4" />
           </div>
           <div className="min-w-0">
-            <h3 className="font-semibold text-base text-white tracking-tight truncate max-w-[220px]" title={nodeData.fileName}>
+            <div className="text-[10px] text-[#697271] uppercase tracking-[0.12em] font-bold">
+              INSPECTION // BLAST RADIUS
+            </div>
+            <h3 className="font-sans font-bold text-sm text-[#FFFFFF] tracking-[-0.03em] truncate max-w-[240px]" title={nodeData.fileName}>
               {nodeData.fileName}
             </h3>
-            <p className="text-[11px] font-mono text-zinc-400 truncate max-w-[220px]">
-              {nodeData.filePath}
-            </p>
           </div>
         </div>
 
@@ -76,17 +86,17 @@ export const DetailDrawer: React.FC<DetailDrawerProps> = ({
           <button
             type="button"
             onClick={handleAskAboutFile}
-            className="px-3 py-1.5 rounded-full bg-[#ff385c] hover:bg-[#e00b41] text-white font-medium text-xs flex items-center space-x-1.5 shadow-airbnb-orb transition-all duration-200 active:scale-98"
+            className="px-3 py-1.5 bg-[#D82C2C] hover:bg-[#D82C2C]/90 text-[#FFFFFF] font-bold text-xs uppercase tracking-wider flex items-center space-x-1.5 transition-colors"
             title="Ask AI about this file"
           >
             <MessageSquarePlus className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Ask AI</span>
+            <span className="hidden sm:inline">ASK AI</span>
           </button>
 
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+            className="p-1.5 bg-[#1A1A1A] border border-[#3B3B3B] text-[#697271] hover:text-[#FFFFFF] hover:border-[#FFFFFF] transition-colors"
             title="Close Drawer"
           >
             <X className="w-4 h-4" />
@@ -94,131 +104,132 @@ export const DetailDrawer: React.FC<DetailDrawerProps> = ({
         </div>
       </div>
 
-      {/* 2. Drawer Scrollable Content (14px rounded interior cards) */}
-      <div className="p-5 space-y-4 overflow-y-auto flex-1 font-sans text-xs">
-        {/* Risk & Root Cause Header Card */}
-        <div className={clsx('p-4 rounded-[14px] border space-y-2 shadow-airbnb', riskBadgeStyles)}>
+      {/* 2. Technical Definition-List Content */}
+      <div className="p-5 space-y-4 overflow-y-auto flex-1 text-xs">
+        {/* Risk & Root Cause Header */}
+        <div className={clsx('p-3.5 border space-y-2', riskBadgeStyles)}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              {risk === 'CRITICAL' && <Flame className="w-4 h-4 text-[#ff385c]" />}
+              {risk === 'CRITICAL' && <Flame className="w-4 h-4 text-[#D82C2C]" />}
               {risk === 'WARNING' && <AlertTriangle className="w-4 h-4 text-amber-400" />}
               {risk === 'SAFE' && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
-              <span className="font-bold uppercase tracking-wider text-xs">
-                {risk} RISK
+              <span className="font-bold uppercase tracking-[0.1em] text-xs">
+                {risk} RISK // EVALUATION
               </span>
             </div>
 
             {nodeData.isRootCause && (
-              <span className="px-2 py-0.5 rounded-full bg-[#ff385c] text-white font-bold text-[10px] uppercase tracking-wider shadow-airbnb-orb">
-                Root Cause
+              <span className="px-2 py-0.5 bg-[#D82C2C] text-[#FFFFFF] font-bold text-[9px] uppercase tracking-wider">
+                ROOT CAUSE
               </span>
             )}
           </div>
 
-          <p className="text-zinc-100 font-medium text-xs leading-relaxed">
+          <p className="font-sans font-medium text-xs text-[#FFFFFF] leading-relaxed">
             {nodeData.breakReason || 'No runtime contract breakage detected.'}
           </p>
         </div>
 
-        {/* Architectural Intent Card */}
-        <div className="space-y-1.5">
-          <div className="flex items-center space-x-1.5 text-zinc-400 px-0.5">
-            <Terminal className="w-3.5 h-3.5 text-[#ff385c]" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">
-              Architectural Intent (Plain English)
+        {/* Technical Definition List */}
+        <div className="bg-[#05070A] border border-[#3B3B3B] divide-y divide-[#3B3B3B]">
+          {/* File Path */}
+          <div className="p-3 flex items-start justify-between gap-2">
+            <span className="text-[#697271] uppercase tracking-wider text-[10px] shrink-0">
+              PATH //
             </span>
-          </div>
-          <p className="p-3.5 bg-zinc-900/70 rounded-[10px] border border-zinc-800 text-zinc-200 leading-relaxed font-medium shadow-sm">
-            {nodeData.intentSummary || 'Modification to existing module logic.'}
-          </p>
-        </div>
-
-        {/* Downstream Blast Radius */}
-        <div className="space-y-2">
-          <div className="flex items-center space-x-1.5 text-zinc-400 px-0.5">
-            <ShieldAlert className="w-3.5 h-3.5 text-[#ff385c]" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">
-              Downstream Blast Radius
-            </span>
-            <span className="ml-auto px-2 py-0.2 rounded-full bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-zinc-300">
-              {downstreamFiles.length} file(s)
+            <span className="font-mono text-right text-[#C8CECD] break-all text-xs">
+              {nodeData.filePath}
             </span>
           </div>
 
-          {downstreamFiles.length > 0 ? (
-            <div className="space-y-1.5">
-              {downstreamFiles.map((file, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center space-x-2 p-2.5 rounded-[8px] bg-zinc-900/60 border border-zinc-800 font-mono text-[11px] text-zinc-200 shadow-sm"
-                >
-                  <ArrowRight className="w-3.5 h-3.5 text-[#ff385c] shrink-0" />
-                  <span className="truncate">{file}</span>
-                </div>
-              ))}
+          {/* Architectural Intent */}
+          <div className="p-3 space-y-1">
+            <div className="flex items-center space-x-1.5 text-[#697271] text-[10px] uppercase tracking-wider font-bold">
+              <Terminal className="w-3.5 h-3.5 text-[#0033A0]" />
+              <span>ARCHITECTURAL INTENT //</span>
             </div>
-          ) : (
-            <p className="p-3 bg-zinc-900/40 rounded-[8px] border border-zinc-800/60 text-zinc-500 italic">
-              No direct downstream consumers detected in the current diff.
+            <p className="font-sans text-xs text-[#FFFFFF] leading-relaxed font-medium">
+              {nodeData.intentSummary || 'Modification to existing module logic.'}
             </p>
-          )}
-        </div>
+          </div>
 
-        {/* Upstream Dependencies */}
-        <div className="space-y-2">
-          <div className="flex items-center space-x-1.5 text-zinc-400 px-0.5">
-            <GitBranch className="w-3.5 h-3.5 text-sky-400" />
-            <span className="text-[10px] uppercase font-bold tracking-wider">
-              Imported Dependencies & Upstream Links
-            </span>
-            {upstreamFiles.length > 0 && (
-              <span className="ml-auto px-2 py-0.2 rounded-full bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-zinc-300">
-                {upstreamFiles.length} upstream
-              </span>
+          {/* Downstream Blast Radius */}
+          <div className="p-3 space-y-2">
+            <div className="flex items-center justify-between text-[10px] uppercase tracking-wider font-bold text-[#697271]">
+              <div className="flex items-center space-x-1.5">
+                <ShieldAlert className="w-3.5 h-3.5 text-[#D82C2C]" />
+                <span>DOWNSTREAM BLAST RADIUS //</span>
+              </div>
+              <span className="text-[#FFFFFF]">{downstreamFiles.length} AFFECTED</span>
+            </div>
+
+            {downstreamFiles.length > 0 ? (
+              <div className="space-y-1">
+                {downstreamFiles.map((file, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center space-x-2 p-1.5 bg-[#1A1A1A] border border-[#3B3B3B] font-mono text-[11px] text-[#FFFFFF]"
+                  >
+                    <ArrowRight className="w-3.5 h-3.5 text-[#D82C2C] shrink-0" />
+                    <span className="truncate">{file}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[#697271] italic text-[11px]">
+                NO DIRECT DOWNSTREAM CONSUMERS IN ACTIVE DIFF.
+              </p>
             )}
           </div>
 
-          {upstreamFiles.length > 0 && (
-            <div className="space-y-1">
-              {upstreamFiles.map((upFile, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center space-x-2 p-2 rounded-[8px] bg-zinc-900/60 border border-zinc-800 font-mono text-[11px] text-sky-300"
-                >
-                  <span className="text-zinc-500">←</span>
-                  <span className="truncate">{upFile}</span>
-                </div>
-              ))}
+          {/* Upstream Dependencies */}
+          <div className="p-3 space-y-2">
+            <div className="flex items-center justify-between text-[10px] uppercase tracking-wider font-bold text-[#697271]">
+              <div className="flex items-center space-x-1.5">
+                <GitBranch className="w-3.5 h-3.5 text-[#0033A0]" />
+                <span>IMPORTED DEPENDENCIES //</span>
+              </div>
+              <span className="text-[#FFFFFF]">{upstreamFiles.length} UPSTREAM</span>
             </div>
-          )}
 
-          {nodeData.imports.length > 0 ? (
-            <div className="flex flex-wrap gap-1.5 mt-1.5">
-              {nodeData.imports.map((imp, idx) => (
-                <span
-                  key={idx}
-                  className="px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 font-mono text-[11px] text-sky-300 shadow-sm"
-                >
-                  {imp}
-                </span>
-              ))}
-            </div>
-          ) : upstreamFiles.length === 0 ? (
-            <p className="p-3 bg-zinc-900/40 rounded-[8px] border border-zinc-800/60 text-zinc-500 italic">
-              No imported local or external modules in added lines.
-            </p>
-          ) : null}
+            {upstreamFiles.length > 0 && (
+              <div className="space-y-1">
+                {upstreamFiles.map((upFile, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center space-x-2 p-1.5 bg-[#1A1A1A] border border-[#3B3B3B] font-mono text-[11px] text-[#0033A0]"
+                  >
+                    <span className="text-[#697271]">←</span>
+                    <span className="truncate text-[#C8CECD]">{upFile}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {nodeData.imports.length > 0 ? (
+              <div className="flex flex-wrap gap-1 mt-1">
+                {nodeData.imports.map((imp, idx) => (
+                  <span
+                    key={idx}
+                    className="px-2 py-0.5 bg-[#1A1A1A] border border-[#3B3B3B] font-mono text-[10px] text-[#C8CECD]"
+                  >
+                    {imp}
+                  </span>
+                ))}
+              </div>
+            ) : upstreamFiles.length === 0 ? (
+              <p className="text-[#697271] italic text-[11px]">
+                NO IMPORTED MODULES DETECTED.
+              </p>
+            ) : null}
+          </div>
         </div>
 
-        {/* Interactive Line-by-Line Selectable Diff */}
-        <div className="space-y-1.5 pt-1">
-          <div className="flex items-center justify-between text-zinc-400 px-0.5">
-            <span className="text-[10px] uppercase font-bold tracking-wider">
-              Interactive Diff & AI Pinpoint
-            </span>
-            <span className="font-mono text-[10px] text-zinc-400">
-              +{nodeData.additions} / -{nodeData.deletions} lines
-            </span>
+        {/* Interactive Diff Section */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-[#697271] font-bold">
+            <span>DIFF HUNKS // PINPOINT INSPECTION</span>
+            <span>+{nodeData.additions} / -{nodeData.deletions}</span>
           </div>
 
           <SelectableDiffView
@@ -235,20 +246,20 @@ export const DetailDrawer: React.FC<DetailDrawerProps> = ({
       </div>
 
       {/* 3. Drawer Footer */}
-      <div className="p-4 border-t border-zinc-800 bg-[#141518]/80 flex items-center justify-between">
-        <div className="flex items-center space-x-2 font-mono text-xs">
-          <span className="text-emerald-400 font-semibold">+{nodeData.additions}</span>
-          <span className="text-zinc-600">/</span>
-          <span className="text-[#ff385c] font-semibold">-{nodeData.deletions}</span>
-          <span className="text-zinc-500 ml-1">lines changed</span>
+      <div className="p-3 border-t border-[#3B3B3B] bg-[#05070A] flex items-center justify-between font-mono text-xs">
+        <div className="flex items-center space-x-2 text-[11px]">
+          <span className="text-emerald-400 font-bold">+{nodeData.additions}</span>
+          <span className="text-[#3B3B3B]">/</span>
+          <span className="text-[#D82C2C] font-bold">-{nodeData.deletions}</span>
+          <span className="text-[#697271]">LINES CHANGED</span>
         </div>
 
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 rounded-[8px] bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-medium text-white transition-colors"
+          className="px-4 py-1.5 bg-[#1A1A1A] hover:bg-[#3B3B3B] border border-[#3B3B3B] text-xs font-bold text-[#FFFFFF] uppercase tracking-wider transition-colors"
         >
-          Dismiss
+          DISMISS [ESC]
         </button>
       </div>
     </aside>
