@@ -1,0 +1,22 @@
+{
+  "name": "diditbreak",
+  "version": "1.0.0",
+  "description": "Architectural safety engine and blast-radius graph for instant git diff comprehension",
+  "private": true,
+  "scripts": {
+    "dev:watcher": "node watcher/watcher.js",
+    "dev:web": "npm --prefix web run dev",
+    "build:web": "npm --prefix web run build",
+    "typecheck": "npm --prefix web run build"
+  },
+  "keywords": [
+    "git-diff",
+    "ast-analysis",
+    "blast-radius",
+    "developer-tooling",
+    "gemini"
+  ],
+  "author": "DidItBreak Team",
+  "license": "MIT"
+}
+
