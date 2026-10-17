@@ -19,11 +19,12 @@ function getParentDir(filePath: string): string {
 
 /**
  * Maps ParsedFileDiff[] to XYFlow Node and Edge arrays following topological heuristics.
- * Optionally integrates Gemini/pre-computed semantic risk analyses.
+ * Optionally integrates Gemini/pre-computed semantic risk analyses and code snippet pinning callbacks.
  */
 export function buildGraphFromDiffs(
   fileDiffs: ParsedFileDiff[],
-  analyses?: Record<string, FileRiskAnalysis>
+  analyses?: Record<string, FileRiskAnalysis>,
+  onPinSnippet?: (fileName: string, snippet: string) => void
 ): GraphData {
   if (fileDiffs.length === 0) {
     return { nodes: [], edges: [] };
@@ -52,6 +53,7 @@ export function buildGraphFromDiffs(
         breakReason: analysis.breakReason,
         intentSummary: analysis.intentSummary,
         isRootCause: analysis.isRootCause,
+        onPinSnippet,
       },
     };
   });

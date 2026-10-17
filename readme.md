@@ -182,6 +182,27 @@ Every modified file renders as a high-contrast interactive node colored by its a
   - **Raw Git Diff Patch:** Line-by-line view with addition and deletion highlights.
 - **Reset:** Click anywhere on the graph canvas background to reset focus.
 
+### 4. Active Repository & Folder Selector
+- **Live Folder Switching:** You don't need to restart `watcher.js` when switching between projects.
+- Click the **Repository Pill** in the top navigation bar (`FolderGit2` icon showing active repository name).
+- Enter or paste any absolute file system path (POSIX or Windows backslash) or click a quick shortcut.
+- The dashboard communicates over WebSocket protocol:
+  - Transmits `{ type: "SET_DIRECTORY", path: targetPath }` to `watcher.js`.
+  - The daemon validates directory existence and `.git` repository presence.
+  - Automatically rebinds Chokidar to the new directory, runs `git diff HEAD`, and returns `{ type: "DIRECTORY_STATUS", success: true }`.
+  - If invalid or missing `.git`, the modal highlights the failure and retains the previous active repository.
+  - The last selected path is automatically persisted in `localStorage` across page reloads.
+
+### 5. Context-Aware Code Explainer Chatbot & Line Pinpointing
+- **Pinpoint Any Code Line:** Hover over or click any modified line in the line-by-line diff inspector (in `DetailDrawer`) or on any node card.
+- **Context Chip:** The selected snippet is automatically pinned to the chat drawer: `[Pinned: fileName | codeSnippet] ✕`.
+- **Targeted AI Diagnostics:** Questions submitted while a snippet is pinned automatically focus Gemini 1.5 Flash on that exact line and its immediate caller dependencies.
+- **One-Click Prompt Chips:** Instant preset questions for rapid evaluation:
+  - *"Why was this line changed?"*
+  - *"What could break if this runs?"*
+  - *"Suggest a safer alternative."*
+- **Floating Launcher:** Click `💬 Ask DidItBreak AI` in the bottom-right corner at any time to open the assistant.
+
 ---
 
 ## 🏆 Judge / Evaluator Demo Guide (Fail-Safe Presets)
